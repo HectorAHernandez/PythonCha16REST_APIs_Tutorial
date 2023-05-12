@@ -1,5 +1,6 @@
 # REST APIs tutorial.
 # Python and REST APIs: Interacting With Web Services"
+
 """
 Table of Contents
 
@@ -95,11 +96,11 @@ to perform on the resource.
 While there are many HTTP methods, the five methods listed below are the most
 commonly used with REST APIs:
 
-HTTP method	Description
+HTTP method	    Description
 -----------     -----------------------------
-GET	        Retrieve an existing resource.
+GET	            Retrieve an existing resource.
 POST	        Create a new resource.
-PUT	        Update an existing resource.
+PUT	            Update an existing resource.
 PATCH	        Partially update an existing resource.
 DELETE	        Delete a resource.
 A REST API client application can use these five HTTP methods to manage the
@@ -118,22 +119,22 @@ Below is a list of the most common status codes returned by REST APIs:
 
 Code	Meaning	          Description
 ----    --------------    ---------------------------------------------------- 
-200	OK	          The requested action was successful.
-201	Created	          A new resource was created.
-202	Accepted	  The request was received, but no modification has been
+200	    OK	              The requested action was successful.
+201	    Created	          A new resource was created.
+202	    Accepted	      The request was received, but no modification has been
                            made yet.
-204	No Content	  The request was successful, but the response has no
+204	    No Content	      The request was successful, but the response has no
                            content.
 
-400	Bad Request	  The request was malformed.
-401	Unauthorized	  The client is not authorized to perform the requested
+400	    Bad Request	      The request was malformed.
+401	    Unauthorized	  The client is not authorized to perform the requested
                            action.
-404	Not Found	  The requested resource was not found.
-415	Unsupported Media Type	The request data format is not supported by the
-                           server.
-422	UnprocessableEntity  The request data was properly formatted but
+404	    Not Found	      The requested resource was not found.
+415	    Unsupported       The request data format is not supported by the server.
+        Media Type          
+422	    UnprocessableEntity  The request data was properly formatted but
                             contained invalid or missing data.
-500	InternalServerError  The server threw an error when processing the
+500	    InternalServerError  The server threw an error when processing the
                              request.
 These ten status codes represent only a small subset of the available HTTP
 status codes (https://en.wikipedia.org/wiki/List_of_HTTP_status_codes). Status
@@ -141,10 +142,10 @@ codes are numbered based on the category of the result:
 Code
 range	Category
 -----   -------------------
-2xx	Successful operation
-3xx	Redirection
-4xx	Client error
-5xx	Server error
+2xx	    Successful operation
+3xx	    Redirection
+4xx	    Client error
+5xx	    Server error
 HTTP status codes come in handy when working with REST APIs as you'll often
 need to perform different logic based on the results of the request."""
 
@@ -161,10 +162,10 @@ resource that represents potential customers in the system:
 HTTP
 method	API endpoint	          Description
 ------  -----------------------   ------------------------
-GET	/customers	          Get a list of customers.
-GET	/customers/<customer_id>  Get a single customer.
-POST	/customers	          Create a new customer.
-PUT	/customers/<customer_id>  Update a specific customer.
+GET	    /customers	              Get a list of customers.
+GET	    /customers/<customer_id>  Get a single customer.
+POST	/customers	              Create a new customer.
+PUT	    /customers/<customer_id>  Update a specific customer.
 PATCH	/customers/<customer_id>  Partially update a specific customer.
 DELETE	/customers/<customer_id>  Delete a specific customer.
 
@@ -219,7 +220,7 @@ called JSONPlaceholder (located at https://jsonplaceholder.typicode.com/). This
 free service provides fake API endpoints that send back responses that requests
 can process. This JSONPlaceholder API Service contains below Resources and
 Endpoints or Routes:
-Resources
+Resources:
 JSONPlaceholder comes with a set of 6 common resources:
 
 /posts	   100 posts
@@ -231,14 +232,14 @@ JSONPlaceholder comes with a set of 6 common resources:
 Note: resources have relations. For example: posts have many comments, albums
 have many photos, ... see guide for the full list.
 
-Routes
+Routes:
 All HTTP methods are supported. You can use http or https for your requests.
-GET	/posts
-GET	/posts/1
-GET	/posts/1/comments
-GET	/comments?postId=1
+GET	    /posts
+GET	    /posts/1
+GET	    /posts/1/comments
+GET	    /comments?postId=1
 POST	/posts
-PUT	/posts/1
+PUT	    /posts/1
 PATCH	/posts/1
 DELETE	/posts/1
 
@@ -273,12 +274,28 @@ Beyond viewing the JSON data from the API, you can also view other things
 about the response:"""
 
 if response_get.status_code == 200 and response_get.reason == "OK":
-    resp_py = json.loads(response_get.text)  # Deserialize to Python Dict DataType
+    print(
+        f"response_get.headers['Content-Type']:  {response_get.headers['Content-Type']}"
+        # OUTPUT: response_get.headers['Content-Type']:  application/json; charset=utf-8
+    )
+
+    resp_py = json.loads(
+        response_get.text
+    )  # Deserialize to Python Dict DataType. The response_get object
+    # contains the response in json and text format, this is why above we used
+    #  the .text attribute.
+    # Note:
+    # Deserialize means From JSON/text format To Python Dictionary using json.loads()
+    # Serialize means From Python Dictionary Datatype To JSON format using json.dumps().
     print(
         f"\n Successful GET /todos/1, status:  {response_get.status_code} \
 reason: {response_get.reason}"
     )
-    #  Successful GET /todos/1, status:  200 reason: OK
+    #  OUTPUT: Successful GET /todos/1, status:  200 reason: OK
+
+    # Using the Python Datatype Dictionary:
+    print(f"resp_py Dictionary --> {resp_py} ")
+    # resp_py Dictionary --> {'userId': 1, 'id': 1, 'title': 'delectus aut autem', 'completed': False}
 
     resp_userId = resp_py["userId"]
     resp_title = resp_py["title"]
@@ -289,6 +306,9 @@ reason: {response_get.reason}"
     print(f"resp_completed: {resp_completed}")
 
     # Now playing with response in json format:
+    print(f"response_get.json() --> {response_get.json()}")
+    # The response_get.json() is an object and it is not printed.
+
     from_json_userId = response_get.json()["userId"]
     from_json_title = "** -- " + response_get.json()["title"] + " -- **"
     from_json_completed = response_get.json()["completed"]
@@ -321,6 +341,14 @@ of the response. """
 # this is deserializing the json object:
 import json
 
+print(f"response_get.text --> {response_get.text}")
+# OUTPUT: response_get.text --> {
+#   "userId": 1,
+#   "id": 1,
+#   "title": "delectus aut autem",
+#   "completed": false
+# }
+
 resp_py = json.loads(response_get.text)  # Deserialize  the json to Python Dict
 print(type(resp_py))
 # <class 'dict'>
@@ -348,13 +376,13 @@ send:
     "title": "Buy milk",
     "completed": false
 }
-This JSON contains information for a new todo item. Back in the Python REPL,
-or in this code, run the following code to create the new todo: """
+This Python Dictionary Datatype contains information for a new todo item. Back
+ in the Python REPL, or in this code, run the following code to create the new todo: """
 import requests
 import json
 
 api_url = "https://jsonplaceholder.typicode.com/todos"
-todo = {"userId": 1, "title": "By honey", "completed": False}
+todo = {"userId": 1, "title": "By honey", "completed": False}  # Dictionary
 
 req_userId = todo["userId"]
 req_title = todo["title"]
@@ -391,7 +419,7 @@ First, you create a dictionary containing the data for your 'todo'. Then you
 pass this dictionary to the 'json' keyword argument of requests.post(). When
 you do this, requests.post() AUTOMATICALLY sets the request's HTTP header
 'Content-Type' to 'application/json'. It also SERIALIZES the 'todo'
-dictionary into a JSON string, which it appends to the body of the request.
+dictionary into a JSON object/string, which it appends to the body of the request.
 
 If you don't use the 'json' keyword argument to supply the JSON data, then
 you need to set 'Content-Type' accordingly and serialize the JSON MANUALLY.
@@ -602,10 +630,10 @@ service:
 HTTP
 method	API endpoint	                 Description
 ------  -----------------------------    -----------
-GET	/transactions	                 Get a list of transactions.
-GET	/transactions/<transaction_id>	 Get a single transaction.
+GET	    /transactions	                 Get a list of transactions.
+GET	    /transactions/<transaction_id>	 Get a single transaction.
 POST	/transactions	                 Create a new transaction.
-PUT	/transactions/<transaction_id>	 Update a transaction.
+PUT	    /transactions/<transaction_id>	 Update a transaction.
 PATCH	/transactions/<transaction_id>	 Partially update a transaction.
 DELETE	/transactions/<transaction_id>	 Delete a transaction.
 
@@ -633,10 +661,10 @@ see endpoints for guests that are nested under events resources:
 HTTP
 method	API endpoint	                      Description
 ------  -----------------------------------   --------------
-GET	/events/<event_id>/guests	      Get a list of guests.
-GET	/events/<event_id>/guests/<guest_id>  Get a single guest.
-POST	/events/<event_id>/guests	      Create a new guest.
-PUT	/events/<event_id>/guests/<guest_id>  Update a guest.
+GET	    /events/<event_id>/guests	          Get a list of guests.
+GET	    /events/<event_id>/guests/<guest_id>  Get a single guest.
+POST	/events/<event_id>/guests	          Create a new guest.
+PUT	    /events/<event_id>/guests/<guest_id>  Update a guest.
 PATCH	/events/<event_id>/guests/<guest_id>  Partially update a guest.
 DELETE	/events/<event_id>/guests/<guest_id>  Delete a guest.
 
@@ -756,7 +784,7 @@ To start things off, take a look at a GET request to /cars, which returns a
 list of cars:
 """
 
-# GET HTPP Method Successful Response Format:
+# GET HTTP Method Successful Response Format:
 """
 Raw HTTP
 GET /cars HTTP/1.1
@@ -851,7 +879,7 @@ resource unchanged, like executing the GET without data.
 
 """
 
-# POST HTPP Method Successful Response Format:
+# POST HTTP Method Successful Response Format:
 """
 Next up, check out a POST request to add a new car:
 Raw HTTP:
@@ -898,7 +926,7 @@ see the changes that they've made.
 
 """
 
-# PUT HTPP Method Successful Response Format:
+# PUT HTTP Method Successful Response Format:
 """
 Now take a look at a PUT request (Put replace all data with the data in the
 Request data section, which should include all the attributes):
@@ -936,7 +964,7 @@ want to send back the full resource for a PUT request. The same applies to
 a PATCH request:
 """
 
-# PATCH HTPP Method Successful Response Format:
+# PATCH HTTP Method Successful Response Format:
 """
 Raw HTTP:
 PATCH /cars/4 HTTP/1.1
@@ -971,7 +999,7 @@ Finally, take a look at how your REST API should respond when it receives
 a DELETE request. Here's a DELETE request to remove a car:
 """
 
-# DELETE HTPP Method Successful Response Format:
+# DELETE HTTP Method Successful Response Format:
 """Raw HTTP:
 DELETE /cars/4 HTTP/1.1
 This DELETE request tells the API to remove the car with the ID 4. Here's the
